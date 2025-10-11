@@ -1,0 +1,98 @@
+{
+    "Dungeon Entrance": {
+      "description": "You are at the dungeon entrance and have to delve into the dungeon.",
+      "encounter": null,
+      "item": null
+    },
+    "Strange Room": {
+      "description": "It is empty with nothing of note inside, you can have a little breather here.",
+      "encounter": null,
+      "item": null
+    },
+    "Red Room": {
+      "description": "A horrible demon lunges at you!",
+      "encounter": "demon",
+      "item": "Demon horn"
+    },
+    "Compelling Room": {
+      "description": "Something here... compels you.",
+      "encounter": "compelling_choices",
+      "item": null
+    },
+    "Ominous Room": {
+      "description": "You feel an ominous tingling in your bones.",
+      "encounter": "ominous_encounter",
+      "item": null
+    },
+    "Howling Room": {
+      "description": "A wolf attacks you as its friends howl in unison!",
+      "encounter": "wolf",
+      "item": "Wolf's tooth"
+    },
+    "Boney Room": {
+      "description": "A skeleton with dried flesh hanging off its bones prepares to take a swing at you!",
+      "encounter": "skeleton",
+      "item": "Skeleton's skull"
+    },
+    "Room of Webs": {
+      "description": "Your spidey senses start tingling just before a massive spider jumps at you!",
+      "encounter": "massive_spider",
+      "item": "Spider fang"
+    },
+    "Suspicious Room": {
+      "description": "The floor and walls of the room are covered in gnarly traps.",
+      "encounter": "trap_encounter",
+      "item": null
+    },
+    "Crawling Room": {
+      "description": "The walls pulse and skitter - you're not alone in here.",
+      "encounter": "scarab_swarm",
+      "item": "Scarab carapace"
+    },
+    "Echoing Room": {
+      "description": "A low hum invades your thoughts before the leech shows itself.",
+      "encounter": "mind_leech",
+      "item": "Psychic slime"
+    },
+    "Smoldering Room": {
+      "description": "Ash hangs in the air. Something burning is waiting.",
+      "encounter": "wickerman",
+      "item": "Charred talisman"
+    },
+    "Watchful Room": {
+      "description": "You sense you're being watched, and then the arrows fly.",
+      "encounter": "revenant_archer",
+      "item": "Ghostly quiver"
+    },
+    "Sulfurous Room": {
+      "description": "A wave of heat hits you, the dragonling snarls from the shadows.",
+      "encounter": "baby_dragon",
+      "item": "Baby dragon scale"
+    },
+    "Splintered Room": {
+      "description": "Broken logs and rotting wood litter the ground. Then you hear the axe.",
+      "encounter": "corrupted_lumberjack",
+      "item": "Cursed axe head"
+    },
+    "Whispering Room": {
+      "description": "Low chanting echoes around you as the cultist steps forward.",
+      "encounter": "cult_acolyte",
+      "item": "Unholy beads"
+    },
+    "Stale Room": {
+      "description": "The air is dead. Then the corpse moves.",
+      "encounter": "crawling_corpse",
+      "item": "Rotten hand"
+    },
+    "Dungeon Exit": {
+      "description": null,
+      "encounter": "exit_encounter",
+      "item": null
+    },
+    "Mythical Shop": {
+    "description": "An eerie glow lights up the chamber. Shelves of enchanted items line the walls, and a cloaked vendor watches you silently.",
+    "encounter": "mythical_shop",
+    "item": null
+    }
+  }
+  
