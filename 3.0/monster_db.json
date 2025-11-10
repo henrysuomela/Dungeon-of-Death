@@ -1,0 +1,63 @@
+{
+    "demon": {
+      "name": "Demon",
+      "health": 30,
+      "max_hit": 15
+    },
+    "skeleton": {
+      "name": "Skeleton",
+      "health": 20,
+      "max_hit": 10
+    },
+    "wolf": {
+      "name": "Wolf",
+      "health": 15,
+      "max_hit": 9
+    },
+    "massive_spider": {
+      "name": "Massive spider",
+      "health": 35,
+      "max_hit": 15
+    },
+    "scarab_swarm": {
+      "name": "Scarab swarm",
+      "health": 18,
+      "max_hit": 9
+    },
+    "mind_leech": {
+      "name": "Mind leech",
+      "health": 22,
+      "max_hit": 10
+    },
+    "fire_golem": {
+      "name": "Fire golem",
+      "health": 40,
+      "max_hit": 15
+    },
+    "revenant_archer": {
+      "name": "Revenant archer",
+      "health": 24,
+      "max_hit": 12
+    },
+    "baby_dragon": {
+      "name": "Baby dragon",
+      "health": 35,
+      "max_hit": 11
+    },
+    "corrupted_lumberjack": {
+      "name": "Corrupted lumberjack",
+      "health": 26,
+      "max_hit": 13
+    },
+    "cult_acolyte": {
+      "name": "Cult acolyte",
+      "health": 20,
+      "max_hit": 10
+    },
+    "crawling_corpse": {
+      "name": "Crawling corpse",
+      "health": 15,
+      "max_hit": 8
+    }
+  }
+  
