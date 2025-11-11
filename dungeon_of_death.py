@@ -1,9 +1,10 @@
 import json
 import os
+import random
 from player_state import player
 from room_encounters import fight_monster, compelling_choices, ominous_encounter, trap_encounter, healing_fountain, exit_encounter
 from shop_encounters import mythical_shop, tanky_shop
-from dungeon_generation import generate_dungeon, find_entrance, SHOP_ROOMS, HEALING_ROOMS, FILLER_ROOMS, ENCOUNTER_ROOMS_NON_CB, COMBAT_ROOMS
+from dungeon_generation import generate_dungeon, find_entrance, create_helper_grids, SHOP_ROOMS, HEALING_ROOMS, FILLER_ROOMS, ENCOUNTER_ROOMS_NON_CB, COMBAT_ROOMS
 
 
 
@@ -32,43 +33,49 @@ ENCOUNTER_HANDLERS = {
 dungeon = generate_dungeon(20, 5)
 entrance_y, entrance_x = find_entrance(dungeon)
 
-visited = [[False for _ in row] for row in dungeon]
-visited[entrance_y][entrance_x] = True
-
-cleared = [[False for _ in row] for row in dungeon]
-cleared[entrance_y][entrance_x] = True
+visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
 
 player['position'] = (entrance_y, entrance_x)
 
 
+
+
+
 def move_player(direction):
     y, x = player['position']
-    no_room_msg = "No room in that direction, you run into a wall."
+    
+    no_room_msg = "\033[1;35mNo room in that direction, you run into a wall.\033[0m"
+    no_door_msg = "\033[1;35mNo door to that side of the room, you'll have to try another direction.\033[0m"
+
+    if missing_a_door[y][x]:
+        if direction == which_door_missing[y][x]:
+            return player_couldnt_move(no_door_msg)
+        
 
     if direction == "w":
         if y > 0:
             player['position'] = (y - 1, x)
             return True
         else:
-            player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_room_msg)
     elif direction == "s":
         if y < len(dungeon) - 1:
             player['position'] = (y + 1, x)
             return True
         else:
-            player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_room_msg)
     elif direction == "a":
         if x > 0:
             player['position'] = (y, x - 1)
             return True
         else:
-            player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_room_msg)
     elif direction == "d":
         if x < len(dungeon[0]) - 1:
             player['position'] = (y, x + 1)
             return True
         else:
-            player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_room_msg)
         
 def player_couldnt_move(message):
     print(message)

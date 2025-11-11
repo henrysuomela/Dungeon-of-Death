@@ -21,7 +21,7 @@ def generate_dungeon(dungeon_levels, rooms_per_level):
 
     SPECIAL_ROOM_ODDS = [
         (0.3, SHOP_ROOMS),
-        (0.7, HEALING_ROOMS),
+        (0.5, HEALING_ROOMS),
         (0.7, FILLER_ROOMS),
         (0.8, ENCOUNTER_ROOMS_NON_CB)
     ]
@@ -86,13 +86,59 @@ def find_entrance(dungeon):
             return 0, x
         
 
+def get_adjacent_room_coords(direction, y, x):
+    if direction == "w":
+        return (y - 1, x)
+    elif direction == "s":
+        return (y + 1, x)
+    elif direction == "a":
+        return (y, x - 1)
+    elif direction == "d":
+        return (y, x + 1)
+        
+
+def create_helper_grids(dungeon):
+    opposite_directions = {"w": "s", "s": "w", "a": "d", "d": "a"}
+    entrance_y, entrance_x = find_entrance(dungeon)
+
+    visited = [[False for _ in row] for row in dungeon]
+    visited[entrance_y][entrance_x] = True
+
+    cleared = [[False for _ in row] for row in dungeon]
+    cleared[entrance_y][entrance_x] = True
+
+    missing_a_door = [[False for _ in row] for row in dungeon]
+    which_door_missing = [[None for _ in row] for row in dungeon]
+
+    for y, row in enumerate(dungeon):
+        if y % 2 != 0 and y != len(dungeon) - 1:
+            x = random.randrange(1, len(row) - 1)
+            blocked_direction = random.choice(['w', 'a', 's', 'd'])
+            missing_a_door[y][x] = True
+            which_door_missing[y][x] = blocked_direction
+
+            adj_y, adj_x = get_adjacent_room_coords(blocked_direction, y, x)
+            if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
+                if which_door_missing[adj_y][adj_x] is None:
+                    missing_a_door[adj_y][adj_x] = True
+                    which_door_missing[adj_y][adj_x] = opposite_directions[blocked_direction]
+
+
+    return visited, cleared, missing_a_door, which_door_missing
+        
+
 # Dungeonin printtaus generoinnin testaukselle
 """
-dungeon = generate_dungeon(20, 5)
 
-for y, row in enumerate(dungeon):
+dungeon = generate_dungeon(20, 5)
+visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
+
+for y, row in enumerate(which_door_missing):
         row_display = []
         for x, room in enumerate(row):
+            if room is None:
+                room = " "
             row_display.append(f"{room:<18}")
         print(' | ' + ' | '.join(row_display) + ' | ')
+
 """
