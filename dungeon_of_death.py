@@ -50,29 +50,29 @@ def move_player(direction):
             player['position'] = (y - 1, x)
             return True
         else:
-            print(no_room_msg)
-            return False
+            player_couldnt_move(no_room_msg)
     elif direction == "s":
         if y < len(dungeon) - 1:
             player['position'] = (y + 1, x)
             return True
         else:
-            print(no_room_msg)
-            return False
+            player_couldnt_move(no_room_msg)
     elif direction == "a":
         if x > 0:
             player['position'] = (y, x - 1)
             return True
         else:
-            print(no_room_msg)
-            return False
+            player_couldnt_move(no_room_msg)
     elif direction == "d":
         if x < len(dungeon[0]) - 1:
             player['position'] = (y, x + 1)
             return True
         else:
-            print(no_room_msg)
-            return False
+            player_couldnt_move(no_room_msg)
+        
+def player_couldnt_move(message):
+    print(message)
+    return False
 
 
 def enter_room():
