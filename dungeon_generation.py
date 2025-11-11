@@ -20,7 +20,7 @@ def generate_dungeon(dungeon_levels, rooms_per_level):
     all_rooms = SHOP_ROOMS + HEALING_ROOMS + FILLER_ROOMS + ENCOUNTER_ROOMS_NON_CB + COMBAT_ROOMS
 
     SPECIAL_ROOM_ODDS = [
-        (0.4, SHOP_ROOMS),
+        (0.3, SHOP_ROOMS),
         (0.7, HEALING_ROOMS),
         (0.7, FILLER_ROOMS),
         (0.8, ENCOUNTER_ROOMS_NON_CB)
