@@ -51,7 +51,6 @@ def move_player(direction):
         if direction == which_door_missing[y][x]:
             return player_couldnt_move(no_door_msg)
         
-
     if direction == "w":
         if y > 0:
             player['position'] = (y - 1, x)
