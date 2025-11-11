@@ -1,0 +1,36 @@
+{
+    "mythical_shop": {
+        "1": {
+            "name": "Flaming sword",
+            "cost": 30,
+            "max_hit": 45
+        },
+        "2": {
+            "name": "Icy blade",
+            "cost": 20,
+            "max_hit": 37
+        },
+        "3": {
+            "name": "Shadow dagger",
+            "cost": 15,
+            "max_hit": 33
+        }
+    },
+    "tanky_shop": {
+        "1": {
+            "name": "Fiery hauberk",
+            "cost": 22,
+            "hp": 100
+        },
+        "2": {
+            "name": "Enchanted chainmail",
+            "cost": 15,
+            "hp": 50
+        },
+        "3": {
+            "name": "Steel cuirass",
+            "cost": 8,
+            "hp": 30
+        }
+    }
+}

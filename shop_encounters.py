@@ -1,24 +1,16 @@
 import random
+import json
+import os
 from player_state import player
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+shop_items_file_path = os.path.join(script_dir, "shop_items.json")
+
+with open(shop_items_file_path, "r") as file:
+    all_shop_items = json.load(file)
+
 def tanky_shop():
-    shop_items = {
-        "1": {
-            "name": "Fiery hauberk",
-            "cost": 22,
-            "hp": 100
-        },
-        "2": {
-            "name": "Enchanted chainmail",
-            "cost": 15,
-            "hp": 50
-        },
-        "3": {
-            "name": "Steel cuirass",
-            "cost": 8,
-            "hp": 30
-        }
-    }
+    shop_items = all_shop_items[tanky_shop]
 
     print("\033[1;36mWelcome to the Tanky Shop.\033[0m")
     print("The merchant has three products in stock:")
@@ -69,23 +61,7 @@ def tanky_shop():
 
 
 def mythical_shop():
-    shop_items = {
-        "1": {
-            "name": "Flaming sword",
-            "cost": 30,
-            "max_hit": 45
-        },
-        "2": {
-            "name": "Icy blade",
-            "cost": 20,
-            "max_hit": 37
-        },
-        "3": {
-            "name": "Shadow dagger",
-            "cost": 15,
-            "max_hit": 33
-        }
-    }
+    shop_items = all_shop_items[mythical_shop]
 
     print("\033[1;36mWelcome to the Mythical Shop.\033[0m")
     print("The vendor displays three glimmering weapons:")
