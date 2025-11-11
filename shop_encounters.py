@@ -10,7 +10,7 @@ with open(shop_items_file_path, "r") as file:
     all_shop_items = json.load(file)
 
 def tanky_shop():
-    shop_items = all_shop_items[tanky_shop]
+    shop_items = all_shop_items['tanky_shop']
 
     print("\033[1;36mWelcome to the Tanky Shop.\033[0m")
     print("The merchant has three products in stock:")
@@ -61,7 +61,7 @@ def tanky_shop():
 
 
 def mythical_shop():
-    shop_items = all_shop_items[mythical_shop]
+    shop_items = all_shop_items['mythical_shop']
 
     print("\033[1;36mWelcome to the Mythical Shop.\033[0m")
     print("The vendor displays three glimmering weapons:")
