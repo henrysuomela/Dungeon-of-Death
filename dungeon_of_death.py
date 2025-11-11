@@ -1,6 +1,5 @@
 import json
 import os
-import random
 from player_state import player
 from room_encounters import fight_monster, compelling_choices, ominous_encounter, trap_encounter, healing_fountain, exit_encounter
 from shop_encounters import mythical_shop, tanky_shop
