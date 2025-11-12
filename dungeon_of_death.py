@@ -157,7 +157,11 @@ def show_map():
                 formatted_cell = f"{base_cell:<18}"
                 cell = f"\033[94m{formatted_cell}\033[0m"
             elif visited[y][x]:
-                cell = room
+                if room in SHOP_ROOMS:
+                    formatted_cell = f"{room:<18}"
+                    cell = f"\033[95m{formatted_cell}\033[0m"
+                else:
+                    cell = room
             else:
                 cell = "???"
             row_display.append(f"{cell:<18}")
