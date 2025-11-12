@@ -111,7 +111,7 @@ def compelling_choices():
 
 
 def ominous_encounter():
-    print("An ominous voice in the walls tells you to choose a number between \033[1;35m1 and 5\033[0m. If you choose wrong you'll take \033[1;94m30\033[0m magical damage.\n")
+    print("An ominous voice in the walls tells you to choose a number between \033[1;35m1 and 5\033[0m. If you choose wrong you'll take \033[1;94m30\033[0m magical damage.")
 
     while True:
         try:
@@ -119,26 +119,24 @@ def ominous_encounter():
             if 1 <= choice <= 5:
                 break
             else:
-                print("You hear the voice telling you to choose between the designated numbers.\n")
+                print("\nYou hear the voice telling you to choose between the designated numbers.")
         except ValueError:
-            print("The voice booms: that is not a number, foolish dummy! Pick a number between 1 and 5.\n")
+            print("\nThe voice booms: that is not a number, foolish dummy! Pick a number between 1 and 5.")
 
     chance = random.randint(1, 5)
     if chance != choice:
-        print("\033[1;32mYou don't take damage this time. The voice tells you to thank your lucky stars.\033[0m")
+        print("\n\033[1;32mYou don't take damage this time. The voice tells you to thank your lucky stars.\033[0m")
         print("On your way out you find \033[1;33m5 gold coins\033[0m.")
         player['gold'] += 5
     else:
-        print("The voice laughs maniacally as you take \033[1;94m30\033[0m damage.")
+        print("\nThe voice laughs maniacally as you take \033[1;94m30\033[0m damage.")
         player['health'] -= 30
         if player['health'] > 0:
             print(f"Current health: \033[1;94m{player['health']}\033[0m")
         else:
             print("Current health: \033[1;94m0\033[0m")
             death_sequence()
-
-
-
+            
 
 def trap_encounter():
     print("\033[1;94mYou spot a switch to disarm the traps, but it's on the other side of the room. You'll have to tip-toe your way over to it.\033[0m")
