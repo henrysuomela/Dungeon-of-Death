@@ -141,21 +141,21 @@ def ominous_encounter():
 
 
 def trap_encounter():
-    print("There's a \033[1;31m50%\033[0m chance you won't take damage tip-toeing through the traps. You can't leave the room before bypassing them.\n")
+    print("\033[1;94mYou spot a switch to disarm the traps, but it's on the other side of the room. You'll have to tip-toe your way over to it.\033[0m")
 
     while True:
         action = input("Press Enter to venture forward through the traps. ")
         if action == "":
-            print("You carefully start making your way through the room.\n")
+            print("\nYou carefully start making your way through the room.\n")
             break
         else:
-            print("Type nothing and press Enter to venture forward.\n")
+            print("\nType nothing and press Enter to venture forward.")
 
     chance = random.randint(1, 2)
 
     if chance == 1:
-        print("\033[1;32mYou skilfully avoid all the traps in the room, taking no damage!\033[0m")
-        print("You even find \033[1;33m3 gold coins\033[0m next to some of the traps you avoided!")
+        print("\033[1;32mYou skilfully avoid all the traps in the room and flick the switch to disarm them!\033[0m")
+        print("You even find \033[1;33m3 gold coins\033[0m from under a disarmed trap!")
         player['gold'] += 3
     if chance == 2:
         print("A trap catches you, dealing \033[1;94m20\033[0m damage!")
@@ -165,6 +165,7 @@ def trap_encounter():
         else:
             print("Your remaining health: \033[1;94m0\033[0m")
             death_sequence()
+        print("\n\033[1;32mYou manage to disarm the rest of the traps, dazed from the damage.\033[0m")
 
 
 def healing_fountain():
