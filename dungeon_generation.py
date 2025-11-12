@@ -140,7 +140,7 @@ def create_helper_grids(dungeon):
     # Täytetään missing_a_door ja which_doors_missing
     for y, row in enumerate(dungeon):
 
-        x_positions = random.sample(range(len(row)), 2)
+        x_positions = random.sample(range(len(row)), 1)
 
         for x in x_positions:
             blocked_direction = random.choice(['w', 'a', 's', 'd'])
