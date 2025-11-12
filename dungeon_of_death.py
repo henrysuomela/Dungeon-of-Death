@@ -29,10 +29,10 @@ ENCOUNTER_HANDLERS = {
 }
 
 
-dungeon = generate_dungeon(20, 5)
+dungeon = generate_dungeon()
 entrance_y, entrance_x = find_entrance(dungeon)
 
-visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
+visited, cleared, missing_a_door, which_doors_missing = create_helper_grids(dungeon)
 
 player['position'] = (entrance_y, entrance_x)
 
@@ -46,7 +46,7 @@ def move_player(direction):
     no_door_msg = "\033[1;35mNo door to that side of the room, you run into a wall.\033[0m"
 
     if missing_a_door[y][x]:
-        if direction in which_door_missing[y][x]:
+        if direction in which_doors_missing[y][x]:
             return player_couldnt_move(no_door_msg)
         
     if direction == "w":

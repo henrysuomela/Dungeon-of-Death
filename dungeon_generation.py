@@ -15,7 +15,7 @@ COMBAT_ROOMS = [
 ]
 
 
-def generate_dungeon(dungeon_levels=20, rooms_per_level=5):
+def generate_dungeon(dungeon_levels=25, rooms_per_level=5):
     dungeon = []
     all_rooms = SHOP_ROOMS + HEALING_ROOMS + FILLER_ROOMS + ENCOUNTER_ROOMS_NON_CB + COMBAT_ROOMS
 
@@ -26,7 +26,7 @@ def generate_dungeon(dungeon_levels=20, rooms_per_level=5):
     ]
 
     # Määritellään kauppa levelit (määrää voi muuttaa)
-    shop_level_pool = list(range(0, dungeon_levels - 1, 3)) # Pool on joka kolmas leveli, ei kauppoja päällekkäisiin leveleihin
+    shop_level_pool = list(range(0, dungeon_levels - 1, 3)) # Pool on joka kolmas leveli, kauppalevelit väh. 2 levelin päässä toisistaan
     shop_levels = random.sample(shop_level_pool, 6)
     shops_that_appear = {}
 
@@ -135,8 +135,9 @@ def create_helper_grids(dungeon):
     cleared[entrance_y][entrance_x] = True
 
     missing_a_door = [[False for _ in row] for row in dungeon]
-    which_door_missing = [[[] for _ in row] for row in dungeon]
+    which_doors_missing = [[[] for _ in row] for row in dungeon]
 
+    # Täytetään missing_a_door ja which_doors_missing
     for y, row in enumerate(dungeon):
 
         x_positions = random.sample(range(len(row)), 2)
@@ -145,26 +146,54 @@ def create_helper_grids(dungeon):
             blocked_direction = random.choice(['w', 'a', 's', 'd'])
             if not missing_a_door[y][x]:
                 missing_a_door[y][x] = True
-            if blocked_direction not in which_door_missing[y][x]:
-                which_door_missing[y][x].append(blocked_direction)
+            if blocked_direction not in which_doors_missing[y][x]:
+                which_doors_missing[y][x].append(blocked_direction)
 
             adj_y, adj_x = get_adjacent_room_coords(blocked_direction, y, x)
             if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
-                if opposite_directions[blocked_direction] not in which_door_missing[adj_y][adj_x]:
+                if opposite_directions[blocked_direction] not in which_doors_missing[adj_y][adj_x]:
                     missing_a_door[adj_y][adj_x] = True
-                    which_door_missing[adj_y][adj_x].append(opposite_directions[blocked_direction])
+                    which_doors_missing[adj_y][adj_x].append(opposite_directions[blocked_direction])
+
+    # Varmistetaan ettei minkään huoneen kaikki suunnat oo blokattu
+    corners = [(0, 0), (0, len(dungeon[0]) - 1), (len(dungeon) - 1, 0), (len(dungeon) - 1, len(dungeon[0]) - 1)]
+    for y, row in enumerate(dungeon):
+        for x in range(len(row)):
+            position = (y, x)
+            doors_missing = which_doors_missing[y][x]
+            valid_doors = []
+            for door in doors_missing:
+                adj_y, adj_x = get_adjacent_room_coords(door, y, x)
+                if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
+                    valid_doors.append(door)
+
+            if position in corners:
+                max_missing = 1
+            elif y == 0 or y == len(dungeon) - 1 or x == 0 or x == len(dungeon[0]) - 1:
+                max_missing = 2
+            else:
+                max_missing = 3
+
+            if len(valid_doors) > max_missing:
+                unlocked_direction = random.choice(valid_doors)
+                which_doors_missing[y][x].remove(unlocked_direction)
+
+                adj_y, adj_x = get_adjacent_room_coords(unlocked_direction, y, x)
+                which_doors_missing[adj_y][adj_x].remove(opposite_directions[unlocked_direction])
+                if not which_doors_missing[adj_y][adj_x]:
+                    missing_a_door[adj_y][adj_x] = False
 
 
-    return visited, cleared, missing_a_door, which_door_missing
+    return visited, cleared, missing_a_door, which_doors_missing
         
 
 # Dungeonin printtausta generoinnin testaukselle
-
 """
-dungeon = generate_dungeon(20, 5)
-visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
 
-for y, row in enumerate(which_door_missing):
+dungeon = generate_dungeon(25, 5)
+visited, cleared, missing_a_door, which_doors_missing = create_helper_grids(dungeon)
+
+for y, row in enumerate(which_doors_missing):
         row_display = []
         for x, room in enumerate(row):
             if not room:
@@ -173,9 +202,9 @@ for y, row in enumerate(which_door_missing):
                 room = ", ".join(room)
             row_display.append(f"{room:<18}")
         print(' | ' + ' | '.join(row_display) + ' | ')
-"""
 
-"""
+print("\n\n")
+
 for y, row in enumerate(dungeon):
         row_display = []
         for x, room in enumerate(row):
@@ -186,4 +215,5 @@ for y, row in enumerate(dungeon):
                 cell = room
             row_display.append(f"{cell:<18}")
         print(' | ' + ' | '.join(row_display) + ' | ')
+
 """
