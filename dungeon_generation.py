@@ -108,27 +108,29 @@ def create_helper_grids(dungeon):
     cleared[entrance_y][entrance_x] = True
 
     missing_a_door = [[False for _ in row] for row in dungeon]
-    which_door_missing = [[None for _ in row] for row in dungeon]
+    which_door_missing = [[[] for _ in row] for row in dungeon]
 
     for y, row in enumerate(dungeon):
-        if y % 2 != 0 and y != len(dungeon) - 1:
-            x = random.randrange(1, len(row) - 1)
-            blocked_direction = random.choice(['w', 'a', 's', 'd'])
+        x = random.randrange(len(row))
+        blocked_direction = random.choice(['w', 'a', 's', 'd'])
+        if not missing_a_door[y][x]:
             missing_a_door[y][x] = True
-            which_door_missing[y][x] = blocked_direction
+        if blocked_direction not in which_door_missing[y][x]:
+            which_door_missing[y][x].append(blocked_direction)
 
-            adj_y, adj_x = get_adjacent_room_coords(blocked_direction, y, x)
-            if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
-                if which_door_missing[adj_y][adj_x] is None:
-                    missing_a_door[adj_y][adj_x] = True
-                    which_door_missing[adj_y][adj_x] = opposite_directions[blocked_direction]
+        adj_y, adj_x = get_adjacent_room_coords(blocked_direction, y, x)
+        if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
+            if opposite_directions[blocked_direction] not in which_door_missing[adj_y][adj_x]:
+                missing_a_door[adj_y][adj_x] = True
+                which_door_missing[adj_y][adj_x].append(opposite_directions[blocked_direction])
 
 
     return visited, cleared, missing_a_door, which_door_missing
+
         
 
 # Dungeonin printtaus generoinnin testaukselle
-"""
+
 
 dungeon = generate_dungeon(20, 5)
 visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
@@ -136,9 +138,10 @@ visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dunge
 for y, row in enumerate(which_door_missing):
         row_display = []
         for x, room in enumerate(row):
-            if room is None:
+            if not room:
                 room = " "
+            else:
+                room = ", ".join(room)
             row_display.append(f"{room:<18}")
         print(' | ' + ' | '.join(row_display) + ' | ')
 
-"""

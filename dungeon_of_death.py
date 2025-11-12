@@ -43,11 +43,10 @@ player['position'] = (entrance_y, entrance_x)
 def move_player(direction):
     y, x = player['position']
     
-    no_room_msg = "\033[1;35mNo room in that direction, you run into a wall.\033[0m"
-    no_door_msg = "\033[1;35mNo door to that side of the room, you'll have to try another direction.\033[0m"
+    no_door_msg = "\033[1;35mNo door to that side of the room, you run into a wall.\033[0m"
 
     if missing_a_door[y][x]:
-        if direction == which_door_missing[y][x]:
+        if direction in which_door_missing[y][x]:
             return player_couldnt_move(no_door_msg)
         
     if direction == "w":
@@ -55,25 +54,25 @@ def move_player(direction):
             player['position'] = (y - 1, x)
             return True
         else:
-            return player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_door_msg)
     elif direction == "s":
         if y < len(dungeon) - 1:
             player['position'] = (y + 1, x)
             return True
         else:
-            return player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_door_msg)
     elif direction == "a":
         if x > 0:
             player['position'] = (y, x - 1)
             return True
         else:
-            return player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_door_msg)
     elif direction == "d":
         if x < len(dungeon[0]) - 1:
             player['position'] = (y, x + 1)
             return True
         else:
-            return player_couldnt_move(no_room_msg)
+            return player_couldnt_move(no_door_msg)
         
 def player_couldnt_move(message):
     print(message)
