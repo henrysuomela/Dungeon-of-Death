@@ -15,16 +15,20 @@ COMBAT_ROOMS = [
 ]
 
 
-def generate_dungeon(dungeon_levels, rooms_per_level):
+def generate_dungeon(dungeon_levels=20, rooms_per_level=5):
     dungeon = []
     all_rooms = SHOP_ROOMS + HEALING_ROOMS + FILLER_ROOMS + ENCOUNTER_ROOMS_NON_CB + COMBAT_ROOMS
 
     SPECIAL_ROOM_ODDS = [
-        (0.3, SHOP_ROOMS),
         (0.5, HEALING_ROOMS),
         (0.7, FILLER_ROOMS),
         (0.8, ENCOUNTER_ROOMS_NON_CB)
     ]
+
+    # Määritellään kauppa levelit (määrää voi muuttaa)
+    shop_level_pool = list(range(0, dungeon_levels - 1, 3)) # Pool on joka kolmas leveli, ei kauppoja päällekkäisiin leveleihin
+    shop_levels = random.sample(shop_level_pool, 6)
+    shops_that_appear = {}
 
     prev_level_rooms = set()
 
@@ -39,21 +43,44 @@ def generate_dungeon(dungeon_levels, rooms_per_level):
             if room in available_rooms:
                 available_rooms.remove(room)
 
-        # Ekaan leveliin entrance ja kauppa, vikaan exit
+        # Ekaan leveliin entrance, vikaan exit
         if level == 0:
             level_rooms.append("Dungeon Entrance")
-            shop = random.choice(SHOP_ROOMS)
-            level_rooms.append(shop)
         elif level == dungeon_levels - 1:
             level_rooms.append("Dungeon Exit")
 
-        # Arvotaan special roomit leveliin poislukien eka level
-        if level != 0:
-            for chance, pool in SPECIAL_ROOM_ODDS:
-                if random.random() < chance and special_room_count < 3:
-                    available_in_pool = list(set(pool) & set(available_rooms))
-                    if available_in_pool:
-                        special_room = random.choice(available_in_pool)
+        # Kauppaleveleihin kauppa
+        if level in shop_levels:
+            # Pienin count esiintyvien kauppojen dictionaryssä
+            if len(shops_that_appear) == len(SHOP_ROOMS):
+                min_count = min(shops_that_appear.values())
+            else:
+                min_count = 0
+
+            # Lista kaupoista jotka esiintyy min_count verran
+            candidates = []
+            for shop in SHOP_ROOMS:
+                count = shops_that_appear.get(shop, 0)
+                if count == min_count:
+                    candidates.append(shop)
+            
+            # Valitaan listasta kauppa, lisätään leveliin ja päivitetään count
+            shop = random.choice(candidates)
+            level_rooms.append(shop)
+            if shop in shops_that_appear:
+                shops_that_appear[shop] += 1
+            else:
+                shops_that_appear[shop] = 1
+            
+
+
+        # Arvotaan special roomit leveliin
+        for chance, pool in SPECIAL_ROOM_ODDS:
+            if random.random() < chance and special_room_count < 3:
+                available_in_pool = list(set(pool) & set(available_rooms))
+                if available_in_pool:
+                    special_room = random.choice(available_in_pool)
+                    if special_room not in rooms_used_this_level:
                         level_rooms.append(special_room)
                         rooms_used_this_level.add(special_room)
                         special_room_count += 1
@@ -136,7 +163,7 @@ def create_helper_grids(dungeon):
 
 dungeon = generate_dungeon(20, 5)
 visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
-
+"""
 for y, row in enumerate(which_door_missing):
         row_display = []
         for x, room in enumerate(row):
@@ -145,5 +172,17 @@ for y, row in enumerate(which_door_missing):
             else:
                 room = ", ".join(room)
             row_display.append(f"{room:<18}")
+        print(' | ' + ' | '.join(row_display) + ' | ')
+"""
+
+for y, row in enumerate(dungeon):
+        row_display = []
+        for x, room in enumerate(row):
+            if room in SHOP_ROOMS:
+                formatted_cell = f"{room:<18}"
+                cell = f"\033[95m{formatted_cell}\033[0m"
+            else:
+                cell = room
+            row_display.append(f"{cell:<18}")
         print(' | ' + ' | '.join(row_display) + ' | ')
 
