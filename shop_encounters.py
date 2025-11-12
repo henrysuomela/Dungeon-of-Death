@@ -13,7 +13,7 @@ def tanky_shop():
     shop_items = all_shop_items['tanky_shop']
 
     print("\033[1;36mWelcome to the Tanky Shop.\033[0m")
-    print("The merchant has three products in stock:")
+    print(f"The merchant has {len(shop_items)} products in stock:")
 
     for key, item in shop_items.items():
         print(f"{key}. {item['name']} - {item['cost']} monster parts (Protection: \033[1;31m{item['hp']}\033[0m)")
@@ -64,7 +64,7 @@ def mythical_shop():
     shop_items = all_shop_items['mythical_shop']
 
     print("\033[1;36mWelcome to the Mythical Shop.\033[0m")
-    print("The vendor displays three glimmering weapons:")
+    print(f"The vendor displays {len(shop_items)} glimmering weapons:")
 
     for key, item in shop_items.items():
         print(f"{key}. {item['name']} - {item['cost']} coins (Max Hit \033[1;31m{item['max_hit']}\033[0m)")
