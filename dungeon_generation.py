@@ -158,12 +158,12 @@ def create_helper_grids(dungeon):
     return visited, cleared, missing_a_door, which_door_missing
         
 
-# Dungeonin printtaus generoinnin testaukselle
+# Dungeonin printtausta generoinnin testaukselle
 
-
+"""
 dungeon = generate_dungeon(20, 5)
 visited, cleared, missing_a_door, which_door_missing = create_helper_grids(dungeon)
-"""
+
 for y, row in enumerate(which_door_missing):
         row_display = []
         for x, room in enumerate(row):
@@ -175,6 +175,7 @@ for y, row in enumerate(which_door_missing):
         print(' | ' + ' | '.join(row_display) + ' | ')
 """
 
+"""
 for y, row in enumerate(dungeon):
         row_display = []
         for x, room in enumerate(row):
@@ -185,4 +186,4 @@ for y, row in enumerate(dungeon):
                 cell = room
             row_display.append(f"{cell:<18}")
         print(' | ' + ' | '.join(row_display) + ' | ')
-
+"""
