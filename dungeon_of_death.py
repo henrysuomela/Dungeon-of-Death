@@ -153,7 +153,7 @@ def show_map():
         row_display = []
         for x, room in enumerate(row):
             if (y, x) == player['position']:
-                base_cell = f"▶ {dungeon[y][x]}"
+                base_cell = f"▶ {room}"
                 formatted_cell = f"{base_cell:<18}"
                 cell = f"\033[94m{formatted_cell}\033[0m"
             elif visited[y][x]:
