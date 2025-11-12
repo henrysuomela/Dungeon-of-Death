@@ -56,7 +56,7 @@ def tanky_shop():
                 player['armor'] = item['name']
                 print(f"You have purchased the \033[1;36m{item['name']}\033[0m!")
             
-            print(f"You have \033[1;32m{player_funds - item['cost']} monster parts\033[0m left.")
+            print(f"You have \033[1;32m{player_funds - item['cost']} monster part{'' if player_funds - item['cost'] == 1 else 's'}\033[0m left.")
             break
 
 
@@ -95,5 +95,5 @@ def mythical_shop():
 
             print(f"\nYou have purchased the \033[1;36m{item['name']}\033[0m!")
             print(f"Your new weapon increases your max hit to \033[1;31m{player['max_hit']}\033[0m.\n")
-            print(f"You have \033[1;33m{player['gold']} gold coins\033[0m left.")
+            print(f"You have \033[1;33m{player['gold']} gold coin{'' if player['gold'] == 1 else 's'}\033[0m left.")
             break
