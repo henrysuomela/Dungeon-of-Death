@@ -108,8 +108,6 @@ def compelling_choices():
             print("You must make a choice between yes and no, adventurer!\n")
 
 
-
-
 def ominous_encounter():
     print("An ominous voice in the walls tells you to choose a number between \033[1;35m1 and 5\033[0m. If you choose wrong you'll take \033[1;94m30\033[0m magical damage.")
 
@@ -183,8 +181,11 @@ def healing_fountain():
 
 def exit_encounter():
     print("\033[1;35mYou have reached the Dungeon exit.\033[0m\n")
-    print(f"You survived the dungeon all the way to the exit, collecting \033[1;33m{player['gold']} gold coins\033[0m.")
-    print("The items left in your bag after your journey through the dungeon:")
+    print(
+        f"You survived the dungeon all the way to the exit with " 
+        f"\033[1;33m{player['gold']} gold coin{'' if player['gold'] == 1 else 's'}\033[0m in your pouch."
+    )
+    print("The monster parts in your bag after your journey through the dungeon:")
     for item, count in player['inventory'].items():
         if count > 1:
             print(f"\033[1;92m{item}\033[0m x{count}")
@@ -201,10 +202,6 @@ def exit_encounter():
     else:
         print("Can't go back to the dungeon this way. You'll have to launch the game again and start at the beginning.")
         exit()
-
-
-
-
 
 
 def death_sequence():
