@@ -184,7 +184,7 @@ def healing_fountain():
 def exit_encounter():
     print("\033[1;35mYou have reached the Dungeon exit.\033[0m\n")
     print(f"You survived the dungeon all the way to the exit, collecting \033[1;33m{player['gold']} gold coins\033[0m.")
-    print("The items you collected on your journey through the dungeon:")
+    print("The items left in your bag after your journey through the dungeon:")
     for item, count in player['inventory'].items():
         if count > 1:
             print(f"\033[1;92m{item}\033[0m x{count}")

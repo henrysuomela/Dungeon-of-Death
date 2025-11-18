@@ -140,7 +140,7 @@ def create_helper_grids(dungeon):
     # Täytetään missing_a_door ja which_doors_missing
     for y, row in enumerate(dungeon):
 
-        x_positions = random.sample(range(len(row)), 1)
+        x_positions = random.sample(range(len(row)), 2)
 
         for x in x_positions:
             blocked_direction = random.choice(['w', 'a', 's', 'd'])
@@ -155,28 +155,36 @@ def create_helper_grids(dungeon):
                     missing_a_door[adj_y][adj_x] = True
                     which_doors_missing[adj_y][adj_x].append(opposite_directions[blocked_direction])
 
-    # Varmistetaan ettei minkään huoneen kaikki suunnat oo blokattu
+    # Varmistetaan ettei missään huoneessa liikaa blokattuja suuntia
     corners = [(0, 0), (0, len(dungeon[0]) - 1), (len(dungeon) - 1, 0), (len(dungeon) - 1, len(dungeon[0]) - 1)]
     for y, row in enumerate(dungeon):
         for x in range(len(row)):
             position = (y, x)
             doors_missing = which_doors_missing[y][x]
-            valid_doors = []
-            for door in doors_missing:
-                adj_y, adj_x = get_adjacent_room_coords(door, y, x)
-                if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
-                    valid_doors.append(door)
 
             if position in corners:
-                max_missing = 1
+                max_missing = 0
             elif y == 0 or y == len(dungeon) - 1 or x == 0 or x == len(dungeon[0]) - 1:
-                max_missing = 2
+                max_missing = 1
             else:
-                max_missing = 3
+                max_missing = 2
 
-            if len(valid_doors) > max_missing:
-                unlocked_direction = random.choice(valid_doors)
-                which_doors_missing[y][x].remove(unlocked_direction)
+            while True:
+                valid_missing_doors = []
+                for door in doors_missing:
+                    adj_y, adj_x = get_adjacent_room_coords(door, y, x)
+                    if 0 <= adj_y < len(dungeon) and 0 <= adj_x < len(dungeon[0]):
+                        valid_missing_doors.append(door)
+                    else:
+                        doors_missing.remove(door)
+
+                if len(valid_missing_doors) <= max_missing:
+                    break
+                
+                unlocked_direction = random.choice(valid_missing_doors)
+                doors_missing.remove(unlocked_direction)
+                if not doors_missing:
+                    missing_a_door[y][x] = False
 
                 adj_y, adj_x = get_adjacent_room_coords(unlocked_direction, y, x)
                 which_doors_missing[adj_y][adj_x].remove(opposite_directions[unlocked_direction])
@@ -188,8 +196,8 @@ def create_helper_grids(dungeon):
         
 
 # Dungeonin printtausta generoinnin testaukselle
-"""
 
+"""
 dungeon = generate_dungeon(25, 5)
 visited, cleared, missing_a_door, which_doors_missing = create_helper_grids(dungeon)
 
