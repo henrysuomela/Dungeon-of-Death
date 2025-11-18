@@ -1,27 +1,19 @@
 import random
+import json
+import os
 from player_state import player
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+shop_items_file_path = os.path.join(script_dir, "shop_items.json")
+
+with open(shop_items_file_path, "r") as file:
+    all_shop_items = json.load(file)
+
 def tanky_shop():
-    shop_items = {
-        "1": {
-            "name": "Fiery hauberk",
-            "cost": 22,
-            "hp": 100
-        },
-        "2": {
-            "name": "Enchanted chainmail",
-            "cost": 15,
-            "hp": 50
-        },
-        "3": {
-            "name": "Steel cuirass",
-            "cost": 8,
-            "hp": 30
-        }
-    }
+    shop_items = all_shop_items['tanky_shop']
 
     print("\033[1;36mWelcome to the Tanky Shop.\033[0m")
-    print("The merchant has three products in stock:")
+    print(f"The merchant has {len(shop_items)} products in stock:")
 
     for key, item in shop_items.items():
         print(f"{key}. {item['name']} - {item['cost']} monster parts (Protection: \033[1;31m{item['hp']}\033[0m)")
@@ -64,31 +56,15 @@ def tanky_shop():
                 player['armor'] = item['name']
                 print(f"You have purchased the \033[1;36m{item['name']}\033[0m!")
             
-            print(f"You have \033[1;32m{player_funds - item['cost']} monster parts\033[0m left.")
+            print(f"You have \033[1;32m{player_funds - item['cost']} monster part{'' if player_funds - item['cost'] == 1 else 's'}\033[0m left.")
             break
 
 
 def mythical_shop():
-    shop_items = {
-        "1": {
-            "name": "Flaming sword",
-            "cost": 30,
-            "max_hit": 45
-        },
-        "2": {
-            "name": "Icy blade",
-            "cost": 20,
-            "max_hit": 37
-        },
-        "3": {
-            "name": "Shadow dagger",
-            "cost": 15,
-            "max_hit": 33
-        }
-    }
+    shop_items = all_shop_items['mythical_shop']
 
     print("\033[1;36mWelcome to the Mythical Shop.\033[0m")
-    print("The vendor displays three glimmering weapons:")
+    print(f"The vendor displays {len(shop_items)} glimmering weapons:")
 
     for key, item in shop_items.items():
         print(f"{key}. {item['name']} - {item['cost']} coins (Max Hit \033[1;31m{item['max_hit']}\033[0m)")
@@ -119,5 +95,5 @@ def mythical_shop():
 
             print(f"\nYou have purchased the \033[1;36m{item['name']}\033[0m!")
             print(f"Your new weapon increases your max hit to \033[1;31m{player['max_hit']}\033[0m.\n")
-            print(f"You have \033[1;33m{player['gold']} gold coins\033[0m left.")
+            print(f"You have \033[1;33m{player['gold']} gold coin{'' if player['gold'] == 1 else 's'}\033[0m left.")
             break

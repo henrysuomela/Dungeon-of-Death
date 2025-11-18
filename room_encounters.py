@@ -111,7 +111,7 @@ def compelling_choices():
 
 
 def ominous_encounter():
-    print("An ominous voice in the walls tells you to choose a number between \033[1;35m1 and 5\033[0m. If you choose wrong you'll take \033[1;94m30\033[0m magical damage.\n")
+    print("An ominous voice in the walls tells you to choose a number between \033[1;35m1 and 5\033[0m. If you choose wrong you'll take \033[1;94m30\033[0m magical damage.")
 
     while True:
         try:
@@ -119,43 +119,41 @@ def ominous_encounter():
             if 1 <= choice <= 5:
                 break
             else:
-                print("You hear the voice telling you to choose between the designated numbers.\n")
+                print("\nYou hear the voice telling you to choose between the designated numbers.")
         except ValueError:
-            print("The voice booms: that is not a number, foolish dummy! Pick a number between 1 and 5.\n")
+            print("\nThe voice booms: that is not a number, foolish dummy! Pick a number between 1 and 5.")
 
     chance = random.randint(1, 5)
     if chance != choice:
-        print("\033[1;32mYou don't take damage this time. The voice tells you to thank your lucky stars.\033[0m")
+        print("\n\033[1;32mYou don't take damage this time. The voice tells you to thank your lucky stars.\033[0m")
         print("On your way out you find \033[1;33m5 gold coins\033[0m.")
         player['gold'] += 5
     else:
-        print("The voice laughs maniacally as you take \033[1;94m30\033[0m damage.")
+        print("\nThe voice laughs maniacally as you take \033[1;94m30\033[0m damage.")
         player['health'] -= 30
         if player['health'] > 0:
             print(f"Current health: \033[1;94m{player['health']}\033[0m")
         else:
             print("Current health: \033[1;94m0\033[0m")
             death_sequence()
-
-
-
+            
 
 def trap_encounter():
-    print("There's a \033[1;31m50%\033[0m chance you won't take damage tip-toeing through the traps. You can't leave the room before bypassing them.\n")
+    print("\033[1;94mYou spot a switch to disarm the traps, but it's on the other side of the room. You'll have to tip-toe your way over to it.\033[0m")
 
     while True:
         action = input("Press Enter to venture forward through the traps. ")
         if action == "":
-            print("You carefully start making your way through the room.\n")
+            print("\nYou carefully start making your way through the room.\n")
             break
         else:
-            print("Type nothing and press Enter to venture forward.\n")
+            print("\nType nothing and press Enter to venture forward.")
 
     chance = random.randint(1, 2)
 
     if chance == 1:
-        print("\033[1;32mYou skilfully avoid all the traps in the room, taking no damage!\033[0m")
-        print("You even find \033[1;33m3 gold coins\033[0m next to some of the traps you avoided!")
+        print("\033[1;32mYou skilfully avoid all the traps in the room and flick the switch to disarm them!\033[0m")
+        print("You even find \033[1;33m3 gold coins\033[0m from under a disarmed trap!")
         player['gold'] += 3
     if chance == 2:
         print("A trap catches you, dealing \033[1;94m20\033[0m damage!")
@@ -165,6 +163,7 @@ def trap_encounter():
         else:
             print("Your remaining health: \033[1;94m0\033[0m")
             death_sequence()
+        print("\n\033[1;32mYou manage to disarm the rest of the traps, dazed from the damage.\033[0m")
 
 
 def healing_fountain():
@@ -185,7 +184,7 @@ def healing_fountain():
 def exit_encounter():
     print("\033[1;35mYou have reached the Dungeon exit.\033[0m\n")
     print(f"You survived the dungeon all the way to the exit, collecting \033[1;33m{player['gold']} gold coins\033[0m.")
-    print("The items you collected on your journey through the dungeon:")
+    print("The items left in your bag after your journey through the dungeon:")
     for item, count in player['inventory'].items():
         if count > 1:
             print(f"\033[1;92m{item}\033[0m x{count}")

@@ -3,7 +3,7 @@ import os
 from player_state import player
 from room_encounters import fight_monster, compelling_choices, ominous_encounter, trap_encounter, healing_fountain, exit_encounter
 from shop_encounters import mythical_shop, tanky_shop
-from dungeon_generation import generate_dungeon, find_entrance, SHOP_ROOMS, HEALING_ROOMS, FILLER_ROOMS, ENCOUNTER_ROOMS_NON_CB, COMBAT_ROOMS
+from dungeon_generation import generate_dungeon, find_entrance, create_helper_grids, SHOP_ROOMS, HEALING_ROOMS, FILLER_ROOMS, ENCOUNTER_ROOMS_NON_CB, COMBAT_ROOMS
 
 
 
@@ -29,50 +29,54 @@ ENCOUNTER_HANDLERS = {
 }
 
 
-dungeon = generate_dungeon(20, 5)
+dungeon = generate_dungeon()
 entrance_y, entrance_x = find_entrance(dungeon)
 
-visited = [[False for _ in row] for row in dungeon]
-visited[entrance_y][entrance_x] = True
-
-cleared = [[False for _ in row] for row in dungeon]
-cleared[entrance_y][entrance_x] = True
+visited, cleared, missing_a_door, which_doors_missing = create_helper_grids(dungeon)
 
 player['position'] = (entrance_y, entrance_x)
 
 
+
+
+
 def move_player(direction):
     y, x = player['position']
-    no_room_msg = "No room in that direction, you run into a wall."
+    
+    no_door_msg = "\033[1;35mNo door to that side of the room, you run into a wall.\033[0m"
 
+    if missing_a_door[y][x]:
+        if direction in which_doors_missing[y][x]:
+            return player_couldnt_move(no_door_msg)
+        
     if direction == "w":
         if y > 0:
             player['position'] = (y - 1, x)
             return True
         else:
-            print(no_room_msg)
-            return False
+            return player_couldnt_move(no_door_msg)
     elif direction == "s":
         if y < len(dungeon) - 1:
             player['position'] = (y + 1, x)
             return True
         else:
-            print(no_room_msg)
-            return False
+            return player_couldnt_move(no_door_msg)
     elif direction == "a":
         if x > 0:
             player['position'] = (y, x - 1)
             return True
         else:
-            print(no_room_msg)
-            return False
+            return player_couldnt_move(no_door_msg)
     elif direction == "d":
         if x < len(dungeon[0]) - 1:
             player['position'] = (y, x + 1)
             return True
         else:
-            print(no_room_msg)
-            return False
+            return player_couldnt_move(no_door_msg)
+        
+def player_couldnt_move(message):
+    print(message)
+    return False
 
 
 def enter_room():
@@ -148,11 +152,15 @@ def show_map():
         row_display = []
         for x, room in enumerate(row):
             if (y, x) == player['position']:
-                base_cell = f"▶ {dungeon[y][x]}"
+                base_cell = f"▶ {room}"
                 formatted_cell = f"{base_cell:<18}"
                 cell = f"\033[94m{formatted_cell}\033[0m"
             elif visited[y][x]:
-                cell = room
+                if room in SHOP_ROOMS:
+                    formatted_cell = f"{room:<18}"
+                    cell = f"\033[95m{formatted_cell}\033[0m"
+                else:
+                    cell = room
             else:
                 cell = "???"
             row_display.append(f"{cell:<18}")
