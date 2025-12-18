@@ -44,6 +44,11 @@ def move_player(direction):
     y, x = player['position']
     
     no_door_msg = "\033[1;35mNo door to that side of the room, you run into a wall.\033[0m"
+    door_locked_msg = "\033[1;35mYou bang on the door but it won't budge. You can't leave the way you came.\033[0m"
+
+    if y == entrance_y and x == entrance_x:
+        if direction == "w":
+            return player_couldnt_move(door_locked_msg)
 
     if missing_a_door[y][x]:
         if direction in which_doors_missing[y][x]:
@@ -170,7 +175,16 @@ def show_map():
 
 def game_loop():
     print("\033[1;35mWelcome to the Dungeon of Death, adventurer!\033[0m")
-    print("You are at the dungeon entrance and have to delve into the dungeon.\n")
+    print("\033[1;36mYou're just outside the entrance looking upon the tall, menacing doors.\033[0m\n")
+    while True:
+        start_command = input("Press Enter to move into the dungeon if you're brave enough. If not, type 'exit' to leave.\n")
+
+        if start_command == "":
+            break
+        elif start_command.lower() == "exit":
+            exit()
+        
+    print("\033[1;35mYou open the door and walk in. The door closes behind you.\033[0m\n")
     show_map()
     while True:
         command = input("\nEnter command | up(w) / down(s) / right(d) / left(a), health(h) / inventory(i) / map(m), quit |: ").lower()
