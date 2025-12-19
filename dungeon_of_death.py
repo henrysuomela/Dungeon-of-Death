@@ -1,10 +1,9 @@
 import json
 import os
-from player_state import player
-from room_encounters import fight_monster, compelling_choices, ominous_encounter, trap_encounter, healing_fountain, exit_encounter
-from shop_encounters import mythical_shop, tanky_shop
-from dungeon_generation import generate_dungeon, find_entrance, create_helper_grids, SHOP_ROOMS, HEALING_ROOMS, FILLER_ROOMS, ENCOUNTER_ROOMS_NON_CB, COMBAT_ROOMS
-
+import player_state as ps
+import room_encounters as re
+import shop_encounters as se
+import dungeon_generation as dg
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,29 +18,29 @@ with open(rooms_file_path, 'r') as file:
 
 
 ENCOUNTER_HANDLERS = {
-    "compelling_choices": compelling_choices,
-    "ominous_encounter": ominous_encounter,
-    "trap_encounter": trap_encounter,
-    "mythical_shop": mythical_shop,
-    "tanky_shop": tanky_shop,
-    "healing_fountain": healing_fountain,
-    "exit_encounter": exit_encounter
+    "compelling_choices": re.compelling_choices,
+    "ominous_encounter": re.ominous_encounter,
+    "trap_encounter": re.trap_encounter,
+    "mythical_shop": se.mythical_shop,
+    "tanky_shop": se.tanky_shop,
+    "healing_fountain": re.healing_fountain,
+    "exit_encounter": re.exit_encounter
 }
 
 
-dungeon = generate_dungeon()
-entrance_y, entrance_x = find_entrance(dungeon)
+dungeon = dg.generate_dungeon()
+entrance_y, entrance_x = dg.find_entrance(dungeon)
 
-visited, cleared, missing_a_door, which_doors_missing = create_helper_grids(dungeon)
+visited, cleared, missing_a_door, which_doors_missing = dg.create_helper_grids(dungeon)
 
-player['position'] = (entrance_y, entrance_x)
+ps.player['position'] = (entrance_y, entrance_x)
 
 
 
 
 
 def move_player(direction):
-    y, x = player['position']
+    y, x = ps.player['position']
     
     no_door_msg = "\033[1;35mNo door to that side of the room, you run into a wall.\033[0m"
     door_locked_msg = "\033[1;35mYou bang on the door but it won't budge. You can't leave the way you came.\033[0m"
@@ -56,25 +55,25 @@ def move_player(direction):
         
     if direction == "w":
         if y > 0:
-            player['position'] = (y - 1, x)
+            ps.player['position'] = (y - 1, x)
             return True
         else:
             return player_couldnt_move(no_door_msg)
     elif direction == "s":
         if y < len(dungeon) - 1:
-            player['position'] = (y + 1, x)
+            ps.player['position'] = (y + 1, x)
             return True
         else:
             return player_couldnt_move(no_door_msg)
     elif direction == "a":
         if x > 0:
-            player['position'] = (y, x - 1)
+            ps.player['position'] = (y, x - 1)
             return True
         else:
             return player_couldnt_move(no_door_msg)
     elif direction == "d":
         if x < len(dungeon[0]) - 1:
-            player['position'] = (y, x + 1)
+            ps.player['position'] = (y, x + 1)
             return True
         else:
             return player_couldnt_move(no_door_msg)
@@ -85,7 +84,7 @@ def player_couldnt_move(message):
 
 
 def enter_room():
-    y, x = player['position']
+    y, x = ps.player['position']
     room = dungeon[y][x]
     visited[y][x] = True
 
@@ -99,7 +98,7 @@ def enter_room():
         return
     
     # Voi käyttää kauppoja vaikka olis cleared
-    if cleared[y][x] and room not in SHOP_ROOMS:
+    if cleared[y][x] and room not in dg.SHOP_ROOMS:
         print("\033[1;32mRoom cleared.\033[0m")
         return
 
@@ -107,7 +106,7 @@ def enter_room():
         print(f"\033[1;35mYou move into the {room}.\033[0m\n")
 
     # Ei ylimäärästä linebreakkia filler huoneille
-    if room not in FILLER_ROOMS:
+    if room not in dg.FILLER_ROOMS:
         if description:
             print(description + "\n")
     else:
@@ -120,7 +119,7 @@ def enter_room():
         if handler:
             handler()
         else:
-            fight_monster(monster_db[encounter])
+            re.fight_monster(monster_db[encounter])
 
     if item:
         add_to_inventory(item)
@@ -129,39 +128,39 @@ def enter_room():
 
 
 def add_to_inventory(item):
-    if item in player['inventory']:
-        player['inventory'][item] += 1
+    if item in ps.player['inventory']:
+        ps.player['inventory'][item] += 1
     else:
-        player['inventory'][item] = 1
+        ps.player['inventory'][item] = 1
 
 
 def check_health():
-    print(f"Your current health: \033[1;94m{player['health']}\033[0m")
-    print(f"Equipped armor: \033[1;36m{player['armor']}\033[0m (remaining protection: \033[1;31m{player['armor_hp']}\033[0m)")
+    print(f"Your current health: \033[1;94m{ps.player['health']}\033[0m")
+    print(f"Equipped armor: \033[1;36m{ps.player['armor']}\033[0m (remaining protection: \033[1;31m{ps.player['armor_hp']}\033[0m)")
     
 
 def check_inventory():
-    print(f"Equipped weapon: \033[1;36m{player['weapon']}\033[0m (Max Hit: \033[1;31m{player['max_hit']}\033[0m)")
-    print(f"Gold coins: \033[1;33m{player['gold']}\033[0m")
+    print(f"Equipped weapon: \033[1;36m{ps.player['weapon']}\033[0m (Max Hit: \033[1;31m{ps.player['max_hit']}\033[0m)")
+    print(f"Gold coins: \033[1;33m{ps.player['gold']}\033[0m")
     print("Your bag:")
-    for item, count in player['inventory'].items():
+    for item, count in ps.player['inventory'].items():
         if count > 1:
             print(f"\033[1;92m{item}\033[0m x{count}")
         else:
             print(f"\033[1;92m{item}\033[0m")
-    print(f"\nTotal monster parts: \033[1;32m{sum(player['inventory'].values())}\033[0m")
+    print(f"\nTotal monster parts: \033[1;32m{sum(ps.player['inventory'].values())}\033[0m")
 
 
 def show_map():
     for y, row in enumerate(dungeon):
         row_display = []
         for x, room in enumerate(row):
-            if (y, x) == player['position']:
+            if (y, x) == ps.player['position']:
                 base_cell = f"▶ {room}"
                 formatted_cell = f"{base_cell:<18}"
                 cell = f"\033[94m{formatted_cell}\033[0m"
             elif visited[y][x]:
-                if room in SHOP_ROOMS:
+                if room in dg.SHOP_ROOMS:
                     formatted_cell = f"{room:<18}"
                     cell = f"\033[95m{formatted_cell}\033[0m"
                 else:
@@ -212,4 +211,5 @@ def game_loop():
 
 
 if __name__ == "__main__":
+    ps.player = ps.create_player()
     game_loop()
