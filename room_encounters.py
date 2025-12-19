@@ -55,7 +55,7 @@ def fight_monster(monster_template):
                 else:
                     print("Your remaining health: \033[1;94m0\033[0m")
                     print(f"\n\033[1;94mThe {monster['name'].lower()} slaughters you!\033[0m")
-                    death_sequence()
+                    return death_sequence()
         else:
             print("Invalid action. Type nothing and press enter to attack.\n")
 
@@ -96,7 +96,7 @@ def compelling_choices():
             ps.player['health'] -= 30
             if ps.player['health'] <= 0:
                 print("Current health: \033[1;94m0\033[0m")
-                death_sequence()
+                return death_sequence()
             ps.player['gold'] += 8
             print("\nYou take \033[1;94m30\033[0m damage and \033[1;33m8 gold coins\033[0m are added to your pouch.")
             print(f"Current health: \033[1;94m{ps.player['health']}\033[0m")
@@ -133,7 +133,7 @@ def ominous_encounter():
             print(f"Current health: \033[1;94m{ps.player['health']}\033[0m")
         else:
             print("Current health: \033[1;94m0\033[0m")
-            death_sequence()
+            return death_sequence()
             
 
 def trap_encounter():
@@ -160,7 +160,7 @@ def trap_encounter():
             print(f"Your remaining health: \033[1;94m{ps.player['health']}\033[0m")
         else:
             print("Your remaining health: \033[1;94m0\033[0m")
-            death_sequence()
+            return death_sequence()
         print("\n\033[1;32mYou manage to disarm the rest of the traps, dazed from the damage.\033[0m")
 
 
@@ -179,6 +179,7 @@ def healing_fountain():
             print("Invalid choice.\n")
 
 
+exit_msg = "Exiting game."
 def exit_encounter():
     print("\033[1;35mYou have reached the Dungeon exit.\033[0m\n")
     print(
@@ -194,22 +195,22 @@ def exit_encounter():
             
     print("\n\033[1;35mCongratulations! Until next time, adventurer.\033[0m\n")
 
-    user_input = input("Press Enter to exit. ")
+    user_input = input("Press Enter to exit or type 'replay' to play again: ")
 
-    if user_input == "":
-        print("Exiting game. Goodbye!")
-        exit()
+    if user_input.lower() == "replay":
+        print()
+        return "replay"
     else:
-        print("Can't go back to the dungeon this way. You'll have to launch the game again and start at the beginning.")
-        exit()
+        print(exit_msg)
+        return "exit"
 
 
 def death_sequence():
-    user_input = input("\nYou died. . . .\nPress Enter to exit: ")
+    user_input = input("\nYou died. . . .\nPress Enter to exit or type 'replay' to try again: ")
 
-    if user_input == "":
-        print("Exiting game. Goodbye!")
-        exit()
+    if user_input.lower() == "replay":
+        print()
+        return "replay"
     else:
-        print("You can't continue... the dungeon has claimed you.")
-        exit()
+        print(exit_msg)
+        return "exit"

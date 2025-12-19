@@ -46,7 +46,11 @@ def create_dungeon():
 
 
 def start_game():
-    ps.player = ps.create_player()
+    if ps.player is not None:
+        ps.player.clear()
+        ps.player.update(ps.create_player())
+    else:
+        ps.player = ps.create_player()
 
     dungeon_state = create_dungeon()
     return dungeon_state
@@ -60,12 +64,12 @@ def move_player(direction, dungeon_state):
     no_door_msg = "\033[1;35mNo door to that side of the room, you run into a wall.\033[0m"
     door_locked_msg = "\033[1;35mYou bang on the door but it won't budge. You can't leave the way you came.\033[0m"
 
-    if (y, x) == dungeon_state["entrance_coords"]:
+    if (y, x) == dungeon_state['entrance_coords']:
         if direction == "w":
             return player_couldnt_move(door_locked_msg)
 
-    if dungeon_state["missing_a_door"][y][x]:
-        if direction in dungeon_state["which_doors_missing"][y][x]:
+    if dungeon_state['missing_a_door'][y][x]:
+        if direction in dungeon_state['which_doors_missing'][y][x]:
             return player_couldnt_move(no_door_msg)
         
     if direction == "w":
@@ -75,7 +79,7 @@ def move_player(direction, dungeon_state):
         else:
             return player_couldnt_move(no_door_msg)
     elif direction == "s":
-        if y < len(dungeon_state["dungeon"]) - 1:
+        if y < len(dungeon_state['dungeon']) - 1:
             ps.player['position'] = (y + 1, x)
             return True
         else:
@@ -87,7 +91,7 @@ def move_player(direction, dungeon_state):
         else:
             return player_couldnt_move(no_door_msg)
     elif direction == "d":
-        if x < len(dungeon_state["dungeon"][0]) - 1:
+        if x < len(dungeon_state['dungeon'][0]) - 1:
             ps.player['position'] = (y, x + 1)
             return True
         else:
@@ -100,8 +104,8 @@ def player_couldnt_move(message):
 
 def enter_room(dungeon_state):
     y, x = ps.player['position']
-    room = dungeon_state["dungeon"][y][x]
-    dungeon_state["visited"][y][x] = True
+    room = dungeon_state['dungeon'][y][x]
+    dungeon_state['visited'][y][x] = True
 
     room_info = room_data.get(room)
     encounter = room_info.get("encounter")
@@ -113,7 +117,7 @@ def enter_room(dungeon_state):
         return
     
     # Voi käyttää kauppoja vaikka olis cleared
-    if dungeon_state["cleared"][y][x] and room not in dg.SHOP_ROOMS:
+    if dungeon_state['cleared'][y][x] and room not in dg.SHOP_ROOMS:
         print("\033[1;32mRoom cleared.\033[0m")
         return
 
@@ -127,19 +131,20 @@ def enter_room(dungeon_state):
     else:
         if description:
             print(description)
+
+
+    if item:
+        add_to_inventory(item)
+
+    dungeon_state['cleared'][y][x] = True
     
     # Laukasee huoneen encounterin
     if encounter:
         handler = ENCOUNTER_HANDLERS.get(encounter)
         if handler:
-            handler()
+            return handler()
         else:
-            re.fight_monster(monster_db[encounter])
-
-    if item:
-        add_to_inventory(item)
-
-    dungeon_state["cleared"][y][x] = True
+            return re.fight_monster(monster_db[encounter])
 
 
 def add_to_inventory(item):
@@ -167,14 +172,14 @@ def check_inventory():
 
 
 def show_map(dungeon_state):
-    for y, row in enumerate(dungeon_state["dungeon"]):
+    for y, row in enumerate(dungeon_state['dungeon']):
         row_display = []
         for x, room in enumerate(row):
             if (y, x) == ps.player['position']:
                 base_cell = f"▶ {room}"
                 formatted_cell = f"{base_cell:<18}"
                 cell = f"\033[94m{formatted_cell}\033[0m"
-            elif dungeon_state["visited"][y][x]:
+            elif dungeon_state['visited'][y][x]:
                 if room in dg.SHOP_ROOMS:
                     formatted_cell = f"{room:<18}"
                     cell = f"\033[95m{formatted_cell}\033[0m"
@@ -188,44 +193,55 @@ def show_map(dungeon_state):
 
 
 def game_loop():
-    dungeon_state = start_game()
-
-    print("\033[1;35mWelcome to the Dungeon of Death, adventurer!\033[0m")
-    print("\033[1;36mYou're just outside the entrance looking upon the tall, menacing doors.\033[0m\n")
     while True:
-        start_command = input("Press Enter to move into the dungeon if you're brave enough. If not, type 'exit' to leave.\n")
+        dungeon_state = start_game()
 
-        if start_command == "":
-            break
-        elif start_command.lower() == "exit":
-            exit()
-        
-    print("\033[1;35mYou open the door and walk in. The door closes behind you.\033[0m\n")
-    show_map(dungeon_state)
-    while True:
-        command = input("\nEnter command | up(w) / down(s) / right(d) / left(a), health(h) / inventory(i) / map(m), quit |: ").lower()
+        print("\033[1;35mWelcome to the Dungeon of Death, adventurer!\033[0m")
+        print("\033[1;36mYou're just outside the entrance looking upon the tall, menacing doors.\033[0m\n")
+        while True:
+            start_command = input("Press Enter to move into the dungeon if you're brave enough. If not, type 'exit' to leave.\n")
 
-        if command in ["w", "s", "a", "d"]:
-            moved = move_player(command, dungeon_state)
-            if moved:
-                enter_room(dungeon_state)
-            print()
-            show_map(dungeon_state)
-        elif command == "m":
-            print()
-            show_map(dungeon_state)
-        elif command == "h":
-            check_health()
-        elif command == "i":
-            check_inventory()
-        elif command == "quit":
-            print("Goodbye, adventurer.")
-            break
-        else:
-            print("Invalid command")
+            if start_command == "":
+                break
+            elif start_command.lower() == "exit":
+                return
+            
+        print("\033[1;35mYou open the door and walk in. The door closes behind you.\033[0m\n")
+        show_map(dungeon_state)
+        while True:
+            command = input("\nEnter command | up(w) / down(s) / right(d) / left(a), health(h) / inventory(i) / map(m), quit |: ").lower()
+            replay_or_exit = None
+
+            if command in ["w", "s", "a", "d"]:
+                moved = move_player(command, dungeon_state)
+                if moved:
+                    replay_or_exit = enter_room(dungeon_state)
+                
+                if replay_or_exit is not None:
+                    if replay_or_exit == "replay":
+                        break
+                    elif replay_or_exit == "exit":
+                        return
+                
+                print()
+                show_map(dungeon_state)
+
+            elif command == "m":
+                print()
+                show_map(dungeon_state)
+            elif command == "h":
+                check_health()
+            elif command == "i":
+                check_inventory()
+            elif command == "quit":
+                print("Goodbye, adventurer.")
+                return
+            else:
+                print("Invalid command")
 
 
 
 
 if __name__ == "__main__":
+    # re.set_restart_callback(game_loop)
     game_loop()
