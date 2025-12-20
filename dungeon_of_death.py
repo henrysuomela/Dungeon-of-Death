@@ -243,5 +243,4 @@ def game_loop():
 
 
 if __name__ == "__main__":
-    # re.set_restart_callback(game_loop)
     game_loop()
