@@ -110,7 +110,6 @@ def enter_room(dungeon_state):
     room_info = room_data.get(room)
     encounter = room_info.get("encounter")
     description = room_info.get("description")
-    item = room_info.get("item")
 
     if not room_info:
         print("You step into an uncharted room. It's eerily empty.")
@@ -131,12 +130,6 @@ def enter_room(dungeon_state):
     else:
         if description:
             print(description)
-
-
-    if item:
-        add_to_inventory(item)
-
-    dungeon_state['cleared'][y][x] = True
     
     # Laukasee huoneen encounterin
     if encounter:
@@ -146,6 +139,16 @@ def enter_room(dungeon_state):
         else:
             return re.fight_monster(monster_db[encounter])
 
+def clear_room(dungeon_state):
+    y, x = ps.player['position']
+    room = dungeon_state['dungeon'][y][x]
+    room_info = room_data.get(room)
+    item = room_info.get("item")
+
+    if item:
+        add_to_inventory(item)
+
+    dungeon_state['cleared'][y][x] = True
 
 def add_to_inventory(item):
     if item in ps.player['inventory']:
@@ -210,18 +213,18 @@ def game_loop():
         show_map(dungeon_state)
         while True:
             command = input("\nEnter command | up(w) / down(s) / right(d) / left(a), health(h) / inventory(i) / map(m), quit |: ").lower()
-            replay_or_exit = None
 
             if command in ["w", "s", "a", "d"]:
                 moved = move_player(command, dungeon_state)
                 if moved:
-                    replay_or_exit = enter_room(dungeon_state)
+                    result = enter_room(dungeon_state)
                 
-                if replay_or_exit is not None:
-                    if replay_or_exit == "replay":
-                        break
-                    elif replay_or_exit == "exit":
-                        return
+                if result == "cleared":
+                    clear_room(dungeon_state)
+                elif result == "replay":
+                    break
+                elif result == "exit":
+                    return
                 
                 print()
                 show_map(dungeon_state)

@@ -68,6 +68,8 @@ def fight_monster(monster_template):
             print(f"You find \033[1;33m{gold_amount} gold coins\033[0m from the {monster['name'].lower()}'s remains!")
             ps.player['gold'] += gold_amount
 
+        return "cleared"
+
 
 def compelling_choices():
     while True:
@@ -106,6 +108,8 @@ def compelling_choices():
             break
         else:
             print("You must make a choice between yes and no, adventurer!\n")
+        
+    return "cleared"
 
 
 def ominous_encounter():
@@ -134,6 +138,8 @@ def ominous_encounter():
         else:
             print("Current health: \033[1;94m0\033[0m")
             return death_sequence()
+        
+    return "cleared"
             
 
 def trap_encounter():
@@ -163,6 +169,8 @@ def trap_encounter():
             return death_sequence()
         print("\n\033[1;32mYou manage to disarm the rest of the traps, dazed from the damage.\033[0m")
 
+    return "cleared"
+
 
 def healing_fountain():
     while True:
@@ -177,6 +185,8 @@ def healing_fountain():
             break
         else:
             print("Invalid choice.\n")
+
+    return "cleared"
 
 
 exit_msg = "Exiting game."
