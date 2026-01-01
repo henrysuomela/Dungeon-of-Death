@@ -130,6 +130,7 @@ def enter_room(dungeon_state):
     else:
         if description:
             print(description)
+        clear_room(dungeon_state)
     
     # Laukasee huoneen encounterin
     if encounter:
